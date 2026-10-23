@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="in-ID" />
     <locale android:name="ar-SA" />
     <locale android:name="en-US" />
     <locale android:name="bn-BD" />
@@ -8,7 +9,6 @@
     <locale android:name="fa-IR" />
     <locale android:name="fr-FR" />
     <locale android:name="hi-IN" />
-    <locale android:name="in-ID" />
     <locale android:name="it-IT" />
     <locale android:name="ja-JP" />
     <locale android:name="ko-KR" />

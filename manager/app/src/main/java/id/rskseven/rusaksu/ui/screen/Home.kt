@@ -4,6 +4,7 @@ import androidx.core.net.toUri
 import androidx.compose.foundation.Image
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
@@ -41,6 +42,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -49,6 +52,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -71,6 +75,8 @@ import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.InstallScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ModuleScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SettingScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.StealthScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SulogScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SuperUserScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import id.rskseven.rusaksu.*
@@ -174,54 +180,28 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                 Natives.isLkmMode
             }
 
-            StatusCard(
-                kernelVersion,
-                ksuVersion,
-                kernelUAPIVersion,
-                lkmMode,
-                ksuVersionTagParam = ksuVersionTag
-            ) {
-                navigator.navigate(InstallScreenDestination)
-            }
-
-            val homeDestination = BottomBarDestination.entries.firstOrNull()
-            val startRoute = homeDestination?.direction?.route
+            RusaksuStatusCard(
+                kernelVersion = kernelVersion,
+                ksuVersion = ksuVersion,
+                ksuVersionTag = ksuVersionTag,
+                onClickInstall = { navigator.navigate(InstallScreenDestination) }
+            )
 
             if (fullFeatured) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(IntrinsicSize.Min),
-                    horizontalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    Box(modifier = Modifier.weight(1f)) {
-                        SuperuserCard(
-                            onClick = {
-                                navigator.navigate(SuperUserScreenDestination) {
-                                    popUpTo(NavGraphs.root.startRoute) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                DeviceInfoCard()
+                QuickActionsRow(
+                    onReboot = { reboot() },
+                    onSuLog = { navigator.navigate(SulogScreenDestination) },
+                    onTestHide = {
+                        navigator.navigate(StealthScreenDestination) {
+                            popUpTo(NavGraphs.root.startRoute) {
+                                saveState = true
                             }
-                        )
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
-
-                    Box(modifier = Modifier.weight(1f)) {
-                        ModuleCard(
-                            onClick = {
-                                navigator.navigate(ModuleScreenDestination) {
-                                    popUpTo(NavGraphs.root.startRoute) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        )
-                    }
-                }
+                )
             }
 
             val currentVersionCode = getManagerVersion(context).second
@@ -770,6 +750,237 @@ private fun TopBar(
     )
 }
 
+
+private val RusaksuEmerald = Color(0xFF00B873)
+
+@Composable
+private fun SectionHeader(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelLarge,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 1.sp,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+}
+
+@Composable
+private fun InfoRow(
+    label: String,
+    value: String,
+    valueColor: Color = Color.Unspecified,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = valueColor,
+            textAlign = TextAlign.End,
+        )
+    }
+}
+
+@Composable
+private fun RusaksuStatusCard(
+    kernelVersion: KernelVersion,
+    ksuVersion: Int?,
+    ksuVersionTag: String?,
+    onClickInstall: () -> Unit,
+) {
+    val context = LocalContext.current
+    val working = ksuVersion != null
+    val ringColor = if (working) RusaksuEmerald else MaterialTheme.colorScheme.error
+    val managerVersion = ksuVersionTag ?: getManagerVersion(context).first
+    val androidVersion =
+        "${Build.VERSION.RELEASE} \u2022 ${Build.SUPPORTED_ABIS.firstOrNull().orEmpty()}"
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = !working) { onClickInstall() },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        ),
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            SectionHeader(stringResource(R.string.home_status_system))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier.size(84.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        val stroke = 9.dp.toPx()
+                        drawArc(
+                            color = Color.Gray.copy(alpha = 0.25f),
+                            startAngle = -90f,
+                            sweepAngle = 360f,
+                            useCenter = false,
+                            style = Stroke(width = stroke),
+                        )
+                        drawArc(
+                            color = ringColor,
+                            startAngle = -90f,
+                            sweepAngle = if (working) 360f else 270f,
+                            useCenter = false,
+                            style = Stroke(width = stroke, cap = StrokeCap.Round),
+                        )
+                    }
+                    Icon(
+                        imageVector = if (working) Icons.Filled.Check else Icons.Filled.Warning,
+                        contentDescription = null,
+                        tint = ringColor,
+                        modifier = Modifier.size(34.dp),
+                    )
+                }
+                Spacer(Modifier.width(16.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = if (working) stringResource(R.string.home_root_active)
+                        else stringResource(R.string.home_root_inactive),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = ringColor,
+                    )
+                    Text(
+                        text = if (working) stringResource(R.string.home_root_running_safe)
+                        else stringResource(R.string.home_root_not_working),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            InfoRow(stringResource(R.string.home_kernel_label), kernelVersion.toString())
+            InfoRow(stringResource(R.string.home_manager_label), managerVersion)
+            InfoRow(stringResource(R.string.home_android_label), androidVersion)
+        }
+    }
+}
+
+@Composable
+private fun DeviceInfoCard() {
+    val context = LocalContext.current
+    val moduleViewModel: ModuleViewModel = viewModel()
+    var homeInfo by remember { mutableStateOf(HomeInfoSnapshot()) }
+    var stealthOn by remember { mutableStateOf(false) }
+
+    LaunchedEffect(moduleViewModel.moduleList) {
+        val info = withContext(Dispatchers.IO) {
+            buildHomeInfoSnapshot(
+                context,
+                if (Natives.isManager) Natives.version else null,
+                moduleViewModel.moduleList,
+            )
+        }
+        val stealth = withContext(Dispatchers.IO) {
+            runCatching { Natives.isSelinuxHideEnabled() }.getOrDefault(false)
+        }
+        homeInfo = info
+        stealthOn = stealth
+    }
+
+    Card {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            SectionHeader(stringResource(R.string.home_device))
+            InfoRow(stringResource(R.string.home_model_label), Build.MODEL)
+            InfoRow(
+                stringResource(R.string.home_selinux_label),
+                stringResource(homeInfo.selinuxStatusRes),
+            )
+            InfoRow(stringResource(R.string.home_susfs_label), homeInfo.suSFSVersion ?: "-")
+            InfoRow(stringResource(R.string.home_hook_label), homeInfo.hookMode ?: "-")
+            InfoRow(
+                stringResource(R.string.home_mode_label),
+                stringResource(
+                    if (stealthOn) R.string.home_stealth_on else R.string.home_stealth_off
+                ),
+                valueColor = if (stealthOn) RusaksuEmerald else MaterialTheme.colorScheme.onSurface,
+            )
+        }
+    }
+}
+
+@Composable
+private fun QuickActionsRow(
+    onReboot: () -> Unit,
+    onSuLog: () -> Unit,
+    onTestHide: () -> Unit,
+) {
+    val confirmReboot = rememberConfirmDialog(onConfirm = { onReboot() })
+    val rebootDialogTitle = stringResource(R.string.reboot)
+    val rebootDialogContent = stringResource(R.string.home_reboot_confirm)
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        SectionHeader(stringResource(R.string.home_quick_actions))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            QuickActionButton(
+                icon = Icons.Filled.Refresh,
+                label = stringResource(R.string.home_reboot),
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    confirmReboot.showConfirm(
+                        title = rebootDialogTitle,
+                        content = rebootDialogContent,
+                    )
+                },
+            )
+            QuickActionButton(
+                icon = Icons.AutoMirrored.Filled.Article,
+                label = stringResource(R.string.home_su_log),
+                modifier = Modifier.weight(1f),
+                onClick = onSuLog,
+            )
+            QuickActionButton(
+                icon = Icons.Filled.Visibility,
+                label = stringResource(R.string.home_test_hide),
+                modifier = Modifier.weight(1f),
+                onClick = onTestHide,
+            )
+        }
+    }
+}
+
+@Composable
+private fun QuickActionButton(
+    icon: ImageVector,
+    label: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    FilledTonalButton(
+        onClick = onClick,
+        modifier = modifier.height(60.dp),
+        shape = RoundedCornerShape(16.dp),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Icon(icon, contentDescription = null, modifier = Modifier.size(20.dp))
+            Spacer(Modifier.height(2.dp))
+            Text(label, style = MaterialTheme.typography.labelMedium, maxLines = 1)
+        }
+    }
+}
 
 @Composable
 private fun StatusCard(

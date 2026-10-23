@@ -30,13 +30,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import androidx.compose.material3.ListItemDefaults
-import com.dergoogler.mmrl.ui.component.LabelItem
-import com.dergoogler.mmrl.ui.component.LabelItemDefaults
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.AppProfileScreenDestination
@@ -45,8 +44,11 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import id.rskseven.rusaksu.ksuApp
 import id.rskseven.rusaksu.Natives
 import id.rskseven.rusaksu.R
+import id.rskseven.rusaksu.ui.screen.sulog.sulogEntryTitle
 import id.rskseven.rusaksu.ui.component.SearchAppBar
 import id.rskseven.rusaksu.ui.viewmodel.SuperUserViewModel
+import id.rskseven.rusaksu.ui.viewmodel.SulogViewModel
+import id.rskseven.rusaksu.ui.util.SulogEntry
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
@@ -68,11 +70,15 @@ fun SuperUserScreen(navigator: DestinationsNavigator) {
         )
     } else null
 
+    val sulogViewModel = viewModel<SulogViewModel>()
+    val sulogState by sulogViewModel.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(navigator) {
         viewModel.search = ""
         if (viewModel.appList.isEmpty()) {
             viewModel.fetchAppList()
         }
+        sulogViewModel.refresh()
     }
 
     Scaffold(
@@ -174,6 +180,21 @@ fun SuperUserScreen(navigator: DestinationsNavigator) {
                     bottom = 16.dp + navBarPadding
                 )
             ) {
+                item {
+                    RecentAccessCard(
+                        entries = sulogState.visibleEntries.take(3),
+                        onViewAll = { navigator.navigate(SulogScreenDestination) },
+                    )
+                }
+                item {
+                    Text(
+                        text = stringResource(R.string.superuser_permission_title).uppercase(),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                }
                 items(
                     viewModel.appList.filter { it.displayIdentifier != ksuApp.packageName },
                     key = { it.displayIdentifier + it.uid }
@@ -219,51 +240,20 @@ private fun AppItem(
                         text = app.displayIdentifier,
                         style = MaterialTheme.typography.bodySmall
                     )
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        if (app.allowSu) {
-                            val rootLabel = if (developerOptionsEnabled) {
-                                "ROOT | UID: ${app.uid}"
-                            } else {
-                                "ROOT"
-                            }
-                            LabelItem(
-                                text = rootLabel,
-                            )
-                        } else {
-                            if (Natives.uidShouldUmount(app.uid)) {
-                                LabelItem(
-                                    text = "UMOUNT",
-                                    style = LabelItemDefaults.style.copy(
-                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
-                                )
-                            }
-                        }
-                        if (app.hasCustomProfile) {
-                            LabelItem(
-                                text = "CUSTOM",
-                                style = LabelItemDefaults.style.copy(
-                                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                                )
-                            )
-                        } else if (!app.allowSu && !Natives.uidShouldUmount(app.uid)) {
-                            LabelItem(
-                                text = "DEFAULT",
-                                style = LabelItemDefaults.style.copy(
-                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                )
-                            )
-                        }
+                    if (developerOptionsEnabled) {
+                        Text(
+                            text = "UID: ${app.uid}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 }
+            },
+            trailingContent = {
+                StatusChip(
+                    allowSu = app.allowSu,
+                    hasCustomProfile = app.hasCustomProfile,
+                )
             },
             leadingContent = {
                 AsyncImage(
@@ -279,6 +269,110 @@ private fun AppItem(
                 )
             },
         )
+    }
+}
+
+@Composable
+private fun StatusChip(allowSu: Boolean, hasCustomProfile: Boolean) {
+    val (text, container, content) = when {
+        allowSu -> Triple(
+            stringResource(R.string.superuser_active),
+            Color(0xFF00B873),
+            Color.Black,
+        )
+        hasCustomProfile -> Triple(
+            stringResource(R.string.superuser_denied),
+            Color(0xFFFF9800),
+            Color.Black,
+        )
+        else -> Triple(
+            stringResource(R.string.superuser_ask),
+            Color(0xFF42A5F5),
+            Color.White,
+        )
+    }
+    Surface(
+        color = container,
+        contentColor = content,
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+        )
+    }
+}
+
+@Composable
+private fun RecentAccessCard(
+    entries: List<SulogEntry>,
+    onViewAll: () -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.superuser_recent_access).uppercase(),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    text = stringResource(R.string.superuser_view_all),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.clickable(onClick = onViewAll),
+                )
+            }
+            if (entries.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.superuser_no_recent),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else {
+                entries.forEach { entry ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = "\u2022",
+                            color = Color(0xFF00B873),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = sulogEntryTitle(entry),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.weight(1f),
+                            maxLines = 1,
+                        )
+                        entry.timestampText?.let {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
