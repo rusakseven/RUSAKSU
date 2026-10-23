@@ -5,7 +5,7 @@
   <string name="issue_report_body_2">Laporkan segera!</string>
   <string name="issue_report_github">Laporkan di GitHub</string>
   <string name="issue_report_telegram">Hubungi melalui Telegram</string>
-  <string name="issue_report_github_link">https://github.com/KernelSU-Next/KernelSU-Next/issues</string>
+  <string name="issue_report_github_link">https://github.com/RUSAKSU/RUSAKSU/issues</string>
   <string name="issue_report_telegram_link">https://t.me/ksunext</string>
   <string name="confirm">Iya</string>
   <string name="home">Beranda</string>
@@ -14,7 +14,7 @@
   <string name="home_working">Berfungsi</string>
   <string name="home_module_update_count">Pembaruan: %d</string>
   <string name="home_failure">Tidak didukung | Tidak terintegrasi</string>
-  <string name="home_failure_tip">Kernel Non-GKI tidak didukung. Integrasikan driver KernelSU-Next legacy ke dalam kernel Anda!</string>
+  <string name="home_failure_tip">Kernel Non-GKI tidak didukung. Integrasikan driver RUSAKSU legacy ke dalam kernel Anda!</string>
   <string name="home_kernel">Versi kernel</string>
   <string name="hook_mode">Mode hook</string>
   <string name="enable">Aktifkan</string>
@@ -235,12 +235,12 @@
   <string name="settings_enable_avc_spoof">Spoof AVC</string>
   <string name="settings_enable_avc_spoof_summary">Memperbaiki kebocoran konteks SELinux akibat penolakan AVC yang tercatat di log audit.</string>
   <string name="manage_repositories">Kelola Repositori</string>
-  <string name="app_name">KernelSU-Next</string>
-  <string name="require_kernel_version">Versi KernelSU-Next saat ini %1$d terlalu rendah agar manajer dapat berfungsi dengan baik. Silakan perbarui ke versi %2$d atau lebih baru!</string>
-  <string name="profile_umount_modules_summary">Mengaktifkan opsi ini akan memungkinkan KernelSU-Next untuk memulihkan berkas apa pun yang telah dimodifikasi oleh modul untuk aplikasi ini.</string>
-  <string name="settings_uninstall_temporary_message">Hapus sementara KernelSU-Next, dipulihkan ke keadaan semula setelah mulai ulang berikutnya.</string>
-  <string name="settings_uninstall_permanent_message">Menghapus KernelSU-Next (root dan semua modul) sepenuhnya dan secara permanen.</string>
-  <string name="settings_restore_stock_image_message">Pulihkan image asli (jika cadangan ada), biasanya digunakan sebelum OTA; Jika Anda perlu menghapus KernelSU-Next, silakan gunakan \"Hapus permanen\".</string>
+  <string name="app_name">RUSAKSU</string>
+  <string name="require_kernel_version">Versi RUSAKSU saat ini %1$d terlalu rendah agar manajer dapat berfungsi dengan baik. Silakan perbarui ke versi %2$d atau lebih baru!</string>
+  <string name="profile_umount_modules_summary">Mengaktifkan opsi ini akan memungkinkan RUSAKSU untuk memulihkan berkas apa pun yang telah dimodifikasi oleh modul untuk aplikasi ini.</string>
+  <string name="settings_uninstall_temporary_message">Hapus sementara RUSAKSU, dipulihkan ke keadaan semula setelah mulai ulang berikutnya.</string>
+  <string name="settings_uninstall_permanent_message">Menghapus RUSAKSU (root dan semua modul) sepenuhnya dan secara permanen.</string>
+  <string name="settings_restore_stock_image_message">Pulihkan image asli (jika cadangan ada), biasanya digunakan sebelum OTA; Jika Anda perlu menghapus RUSAKSU, silakan gunakan \"Hapus permanen\".</string>
   <string name="backup_success">Pencadangan berhasil</string>
   <string name="backup_failed">Pencadangan gagal</string>
   <string name="restore_success">Pemulihan berhasil</string>
@@ -288,7 +288,7 @@
   <string name="sulog_entry_description_ioctl_grant_root">Akses root diberikan melalui ioctl KernelSU</string>
   <string name="sulog_entry_title_daemon_restarted">Daemon dimulai ulang</string>
   <string name="sulog_entry_title_dropped_events">Kejadian yang terlewat</string>
-  <string name="require_manager_version">Versi manajer KernelSU-Next saat ini %1$d terlalu rendah agar KernelSU-Next dapat berfungsi dengan benar. Harap perbarui manajer ke versi %2$d atau lebih tinggi!</string>
+  <string name="require_manager_version">Versi manajer RUSAKSU saat ini %1$d terlalu rendah agar RUSAKSU dapat berfungsi dengan benar. Harap perbarui manajer ke versi %2$d atau lebih tinggi!</string>
   <string name="profile_flags">Flags</string>
   <string name="profile_flags_desc_no_new_privs">Mencegah peningkatan hak akses lebih lanjut melalui KernelSU dari dalam konteks profil root ini.</string>
   <string name="settings_sulog">SU Log</string>

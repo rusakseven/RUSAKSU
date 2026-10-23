@@ -5,7 +5,7 @@
   <string name="issue_report_body_2">Reporte o mais rápido possível!</string>
   <string name="issue_report_github">Reportar no GitHub</string>
   <string name="issue_report_telegram">Contato via Telegram</string>
-  <string name="issue_report_github_link">https://github.com/KernelSU-Next/KernelSU-Next/issues</string>
+  <string name="issue_report_github_link">https://github.com/RUSAKSU/RUSAKSU/issues</string>
   <string name="issue_report_telegram_link">https://t.me/ksunext</string>
   <string name="confirm">Confirmar</string>
   <string name="home">Início</string>
@@ -235,12 +235,12 @@
   <string name="settings_enable_avc_spoof">Spoofing de AVC</string>
   <string name="settings_enable_avc_spoof_summary">Corrigir vazamento de contexto do Selinux causado por negação de Avc no log de auditoria.</string>
   <string name="manage_repositories">Gerenciar Repositórios</string>
-  <string name="app_name">KernelSU-Next</string>
-  <string name="require_kernel_version">A versão atual do KernelSU-Next, %1$d, é muito antiga para o gerenciador funcionar corretamente. Atualize para a versão %2$d ou superior!</string>
-  <string name="profile_umount_modules_summary">Habilitar esta opção permitirá que o KernelSU-Next restaure quaisquer arquivos modificados pelos módulos deste aplicativo.</string>
-  <string name="settings_uninstall_temporary_message">Desinstale temporariamente o KernelSU-Next e restaure o estado original após a próxima reinicialização.</string>
-  <string name="settings_uninstall_permanent_message">Desinstalar o KernelSU-Next (root e todos os módulos) completa e permanentemente.</string>
-  <string name="settings_restore_stock_image_message">Restaure a imagem de fábrica original (se houver um backup), geralmente usada antes da atualização OTA; se precisar desinstalar o KernelSU-Next, use \"Desinstalar permanentemente\".</string>
+  <string name="app_name">RUSAKSU</string>
+  <string name="require_kernel_version">A versão atual do RUSAKSU, %1$d, é muito antiga para o gerenciador funcionar corretamente. Atualize para a versão %2$d ou superior!</string>
+  <string name="profile_umount_modules_summary">Habilitar esta opção permitirá que o RUSAKSU restaure quaisquer arquivos modificados pelos módulos deste aplicativo.</string>
+  <string name="settings_uninstall_temporary_message">Desinstale temporariamente o RUSAKSU e restaure o estado original após a próxima reinicialização.</string>
+  <string name="settings_uninstall_permanent_message">Desinstalar o RUSAKSU (root e todos os módulos) completa e permanentemente.</string>
+  <string name="settings_restore_stock_image_message">Restaure a imagem de fábrica original (se houver um backup), geralmente usada antes da atualização OTA; se precisar desinstalar o RUSAKSU, use \"Desinstalar permanentemente\".</string>
   <string name="backup_success">Cópia de segurança concluída com sucesso</string>
   <string name="backup_failed">Falha no backup</string>
   <string name="restore_success">Restauração concluída com sucesso</string>

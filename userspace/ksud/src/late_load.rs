@@ -142,7 +142,7 @@ pub fn run(package_name: &String, kmi: Option<String>, allow_shell: bool) -> Res
         .args([
             "start",
             "-n",
-            &format!("{package_name}/com.rifsxd.ksunext.ui.MainActivity"),
+            &format!("{package_name}/id.rskseven.rusaksu.ui.MainActivity"),
         ])
         .status();
 

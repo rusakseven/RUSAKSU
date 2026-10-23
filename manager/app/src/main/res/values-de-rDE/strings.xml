@@ -5,7 +5,7 @@
   <string name="issue_report_body_2">Melden Sie es so bald wie möglich!</string>
   <string name="issue_report_github">Meldung über GitHub</string>
   <string name="issue_report_telegram">Kontaktiere uns über Telegram</string>
-  <string name="issue_report_github_link">https://github.com/KernelSU-Next/KernelSU-Next/issues</string>
+  <string name="issue_report_github_link">https://github.com/RUSAKSU/RUSAKSU/issues</string>
   <string name="issue_report_telegram_link">https://t.me/ksunext</string>
   <string name="confirm">Bestätigen</string>
   <string name="home">Hauptseite</string>
@@ -14,7 +14,7 @@
   <string name="home_working">Arbeitet</string>
   <string name="home_module_update_count">Aktualisierungen: %d</string>
   <string name="home_failure">Nicht unterstützt | Nicht integriert</string>
-  <string name="home_failure_tip">Non-GKI Kernel sind nicht unterstützt. Bitte integriere die KernelSU-Next legacy Treiber in deinen Kernel!</string>
+  <string name="home_failure_tip">Non-GKI Kernel sind nicht unterstützt. Bitte integriere die RUSAKSU legacy Treiber in deinen Kernel!</string>
   <string name="home_kernel">Kernel-Version</string>
   <string name="hook_mode">Einbindungs-Modus</string>
   <string name="enable">Aktivieren</string>
@@ -235,12 +235,12 @@
   <string name="settings_enable_avc_spoof">AVC-Vortäuschung</string>
   <string name="settings_enable_avc_spoof_summary">Fix SELinux Kontext Leck, verursacht durch AVC-Ablehnung im Audit-Log.</string>
   <string name="manage_repositories">Repositories verwalten</string>
-  <string name="app_name">KernelSU-Next</string>
-  <string name="require_kernel_version">Die aktuelle KernelSU-Next-Version %1$d ist zu niedrig, als dass der Manager ordnungsgemäß funktioniert. Bitte aktualisieren Sie auf Version %2$d oder höher!</string>
-  <string name="profile_umount_modules_summary">Wenn Sie diese Option aktivieren, kann KernelSU-Next alle von den Modulen für diese Anwendung geänderten Dateien wiederherstellen.</string>
-  <string name="settings_uninstall_temporary_message">Vorübergehende Deinstallation von KernelSU-Next, Wiederherstellung des ursprünglichen Zustands nach dem nächsten Neustart.</string>
-  <string name="settings_uninstall_permanent_message">KernelSU-Next (Root und alle Module) vollständig und dauerhaft deinstallieren.</string>
-  <string name="settings_restore_stock_image_message">Stellen Sie das Werksabbild wieder her (wenn ein Backup vorhanden ist), das normalerweise vor dem OTA verwendet wurde; Wenn Sie KernelSU-Next deinstallieren müssen, verwenden Sie bitte „Dauerhaft deinstallieren“.</string>
+  <string name="app_name">RUSAKSU</string>
+  <string name="require_kernel_version">Die aktuelle RUSAKSU-Version %1$d ist zu niedrig, als dass der Manager ordnungsgemäß funktioniert. Bitte aktualisieren Sie auf Version %2$d oder höher!</string>
+  <string name="profile_umount_modules_summary">Wenn Sie diese Option aktivieren, kann RUSAKSU alle von den Modulen für diese Anwendung geänderten Dateien wiederherstellen.</string>
+  <string name="settings_uninstall_temporary_message">Vorübergehende Deinstallation von RUSAKSU, Wiederherstellung des ursprünglichen Zustands nach dem nächsten Neustart.</string>
+  <string name="settings_uninstall_permanent_message">RUSAKSU (Root und alle Module) vollständig und dauerhaft deinstallieren.</string>
+  <string name="settings_restore_stock_image_message">Stellen Sie das Werksabbild wieder her (wenn ein Backup vorhanden ist), das normalerweise vor dem OTA verwendet wurde; Wenn Sie RUSAKSU deinstallieren müssen, verwenden Sie bitte „Dauerhaft deinstallieren“.</string>
   <string name="backup_success">Sicherung erfolgreich abgeschlossen</string>
   <string name="backup_failed">Sicherung fehlgeschlagen</string>
   <string name="restore_success">Wiederherstellung erfolgreich abgeschlossen</string>
@@ -288,7 +288,7 @@
   <string name="sulog_entry_description_ioctl_grant_root">root-Zugriff über KernelSU ioctl gewährt</string>
   <string name="sulog_entry_title_daemon_restarted">Daemon neu gestartet</string>
   <string name="sulog_entry_title_dropped_events">Verworfene Ereignisse</string>
-  <string name="require_manager_version">Die aktuelle KernelSU-Next Manager-Version %1$d ist zu niedrig für KernelSU-Next um richtig zu funktionieren. Bitte aktualisieren Sie den Manager auf Version %2$d oder höher!</string>
+  <string name="require_manager_version">Die aktuelle RUSAKSU Manager-Version %1$d ist zu niedrig für RUSAKSU um richtig zu funktionieren. Bitte aktualisieren Sie den Manager auf Version %2$d oder höher!</string>
   <string name="profile_flags">Attribute</string>
   <string name="profile_flags_desc_no_new_privs">Verhindere eine weitere Privilegienerweiterung über KernelSU im Kontext dieses root-Profils.</string>
   <string name="settings_sulog">SU-Log</string>
