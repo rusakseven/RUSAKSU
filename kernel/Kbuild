@@ -122,19 +122,19 @@ $(shell cd $(GIT_ROOT) && [ -f .git/shallow ] && $(LPATH) git fetch --unshallow 
 KSU_GIT_VERSION := $(shell cd $(GIT_ROOT) && $(LPATH) git rev-list --count HEAD 2>/dev/null)
 KSU_GIT_TAG := $(shell cd $(GIT_ROOT) && $(LPATH) git describe --tags --abbrev=0 2>/dev/null)
 KSU_GIT_VERSION_VALID := 1
-$(info -- KernelSU-Next Git repo detected at: $(GIT_ROOT))
+$(info -- RUSAKSU Git repo detected at: $(GIT_ROOT))
 endif
 endif
 
 # Calculate version if git version is available
 ifdef KSU_GIT_VERSION_VALID
 $(eval KSU_VERSION=$(shell expr 30000 + $(KSU_GIT_VERSION) + 289))
-$(info -- KernelSU-Next version: $(KSU_VERSION))
+$(info -- RUSAKSU version: $(KSU_VERSION))
 else
 # If there is no .git directory, use default version
-$(warning "KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!")
+$(warning "KSU_GIT_VERSION not defined! It is better to make RUSAKSU a git repository!")
 KSU_VERSION_FALLBACK := 1
-$(info -- KernelSU-Next version fallback: $(KSU_VERSION_FALLBACK))
+$(info -- RUSAKSU version fallback: $(KSU_VERSION_FALLBACK))
 KSU_VERSION := $(KSU_VERSION_FALLBACK)
 endif
 
@@ -145,14 +145,14 @@ endif
 # (maintainer preference, #1549)
 ifdef KSU_VERSION_OVERRIDE
 KSU_VERSION := $(KSU_VERSION_OVERRIDE)
-$(info -- KernelSU-Next version override: $(KSU_VERSION))
+$(info -- RUSAKSU version override: $(KSU_VERSION))
 endif
 ccflags-y += -DKSU_VERSION=$(KSU_VERSION)
 
 ifdef KSU_GIT_VERSION_VALID
 $(eval KSU_VERSION_TAG=$(KSU_GIT_TAG))
 else
-$(warning "KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!")
+$(warning "KSU_VERSION_TAG not defined! It is better to make RUSAKSU a git submodule!")
 KSU_VERSION_TAG_FALLBACK := v0.0.1
 KSU_VERSION_TAG=$(KSU_VERSION_TAG_FALLBACK)
 endif
@@ -161,24 +161,30 @@ ifdef KSU_VERSION_TAG_OVERRIDE
 KSU_VERSION_TAG := $(KSU_VERSION_TAG_OVERRIDE)
 endif
 
-$(info -- KernelSU-Next tag: $(KSU_VERSION_TAG))
+$(info -- RUSAKSU tag: $(KSU_VERSION_TAG))
 ccflags-y += -DKSU_VERSION_TAG=\"$(KSU_VERSION_TAG)\"
 
 ifndef KSU_NEXT_MANAGER_SIZE
-KSU_NEXT_MANAGER_SIZE := 0x3e6
+KSU_NEXT_MANAGER_SIZE := 0x303
 endif
 
 ifndef KSU_NEXT_MANAGER_HASH
-KSU_NEXT_MANAGER_HASH := 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7
+KSU_NEXT_MANAGER_HASH := 7540530a5363abb7cbafc7a49269ebf04828bacd2f2d11ee197518da0317fda2
+endif
+
+# RUSAKSU: pin the manager package to our own application id by default
+# (integrators may still override KSU_MANAGER_PACKAGE at build time).
+ifndef KSU_MANAGER_PACKAGE
+KSU_MANAGER_PACKAGE := id.rskseven.rusaksu
 endif
 
 ifdef KSU_MANAGER_PACKAGE
 ccflags-y += -DKSU_MANAGER_PACKAGE=\"$(KSU_MANAGER_PACKAGE)\"
-$(info -- KernelSU-Next Manager package name: $(KSU_MANAGER_PACKAGE))
+$(info -- RUSAKSU Manager package name: $(KSU_MANAGER_PACKAGE))
 endif
 
-$(info -- KernelSU-Next Manager signature size: $(KSU_NEXT_MANAGER_SIZE))
-$(info -- KernelSU-Next Manager signature hash: $(KSU_NEXT_MANAGER_HASH))
+$(info -- RUSAKSU Manager signature size: $(KSU_NEXT_MANAGER_SIZE))
+$(info -- RUSAKSU Manager signature hash: $(KSU_NEXT_MANAGER_HASH))
 
 # KSU: checks for available hook
 ## Logic flipped for HAVE_KSU_HOOK: 0 is success, 1 is failure
@@ -186,14 +192,14 @@ HAVE_KSU_HOOK ?= 1
 
 # Checks hooks state
 ifeq ($(CONFIG_KSU_KPROBES_HOOK), y)
-$(info -- KernelSU-Next: Hook mode: Kprobes)
+$(info -- RUSAKSU: Hook mode: Kprobes)
 ccflags-y += -DKSU_KPROBES_HOOK
 # Let's make it 0, so it would pass.
 HAVE_KSU_HOOK := 0
 endif
 
 ifeq ($(CONFIG_KSU_SYSCALL_TABLE_HOOK), y)
-$(info -- KernelSU-Next: Hook mode: Syscall table patching)
+$(info -- RUSAKSU: Hook mode: Syscall table patching)
 ccflags-y += -DKSU_SYSCALL_TABLE_HOOK
 HAVE_KSU_HOOK := 0
 kernelsu-objs += hook/patch_memory.o
@@ -204,12 +210,12 @@ endif
 ifeq ($(CONFIG_KSU_MANUAL_HOOK), y)
 HAVE_KSU_HOOK := $(shell grep -q "ksu_handle_sys_reboot" $(srctree)/kernel/reboot.c && echo 0 || echo 1)
 ifeq ($(HAVE_KSU_HOOK),0)
-$(info -- KernelSU-Next: Hook mode: Manual)
+$(info -- RUSAKSU: Hook mode: Manual)
 endif
 endif
 
 ifneq ($(HAVE_KSU_HOOK),0)
-$(error -- KernelSU-Next: No hooks were defined, please integrate manual hooks in your kernel!)
+$(error -- RUSAKSU: No hooks were defined, please integrate manual hooks in your kernel!)
 endif
 
 # some backports

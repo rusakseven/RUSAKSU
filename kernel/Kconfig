@@ -1,7 +1,7 @@
-menu "KernelSU"
+menu "RUSAKSU"
 
 config KSU
-	tristate "KernelSU function support"
+	tristate "RUSAKSU function support"
 	default y
 	help
 	  Enable kernel-level root privileges on Android System.

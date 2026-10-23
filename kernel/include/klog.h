@@ -5,7 +5,7 @@
 
 #ifdef pr_fmt
 #undef pr_fmt
-#define pr_fmt(fmt) "KernelSU: " fmt
+#define pr_fmt(fmt) "RUSAKSU: " fmt
 #endif
 
 #ifdef CONFIG_KSU_DEBUG

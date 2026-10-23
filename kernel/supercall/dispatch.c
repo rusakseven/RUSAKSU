@@ -1104,7 +1104,7 @@ void __init ksu_supercall_dump_commands(void)
 {
     int i;
 
-    pr_info("KernelSU IOCTL Commands:\n");
+    pr_info("RUSAKSU IOCTL Commands:\n");
     for (i = 0; ksu_ioctl_handlers[i].handler; i++) {
         pr_info("  %-18s = 0x%08x\n", ksu_ioctl_handlers[i].name, ksu_ioctl_handlers[i].cmd);
     }
