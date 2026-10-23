@@ -809,8 +809,10 @@ private fun RusaksuStatusCard(
             .fillMaxWidth()
             .clickable(enabled = !working) { onClickInstall() },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = if (working) RusaksuEmerald.copy(alpha = 0.10f)
+            else MaterialTheme.colorScheme.surfaceVariant,
         ),
+        border = BorderStroke(1.dp, ringColor.copy(alpha = 0.55f)),
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -863,6 +865,7 @@ private fun RusaksuStatusCard(
                     )
                 }
             }
+            HorizontalDivider(color = ringColor.copy(alpha = 0.18f))
             InfoRow(stringResource(R.string.home_kernel_label), kernelVersion.toString())
             InfoRow(stringResource(R.string.home_manager_label), managerVersion)
             InfoRow(stringResource(R.string.home_android_label), androidVersion)
@@ -899,6 +902,10 @@ private fun DeviceInfoCard() {
         ) {
             SectionHeader(stringResource(R.string.home_device))
             InfoRow(stringResource(R.string.home_model_label), Build.MODEL)
+            InfoRow(
+                stringResource(R.string.home_abi_label),
+                Build.SUPPORTED_ABIS.firstOrNull().orEmpty(),
+            )
             InfoRow(
                 stringResource(R.string.home_selinux_label),
                 stringResource(homeInfo.selinuxStatusRes),
